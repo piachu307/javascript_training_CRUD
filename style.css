@@ -1,0 +1,49 @@
+#usersTable {
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 2px;
+	margin: auto;
+	width: 70%;
+}
+
+#usersTable th {
+	background-color: #d9d9d9;
+	padding: 5px;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#usersTable td {
+	padding: 5px;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+}
+
+#usersTable tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+
+#usersTable tbody tr:nth-child(even):hover {
+	background-color: #e6e6e6;
+}
+
+#usersTable tbody tr:nth-child(odd):hover {
+	background-color: #f2f2f2;
+}
+
+#usersTable thead tr th:first-child {
+	border-top-left-radius: 13px;
+}
+
+#usersTable thead tr th:last-child {
+	border-top-right-radius: 13px;
+}
+
+#usersTable tbody tr:last-child td:first-child {
+	border-bottom-left-radius: 13px;
+}
+
+#usersTable tbody tr:last-child td:last-child {
+	border-bottom-right-radius: 13px;
+}
