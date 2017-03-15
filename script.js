@@ -58,7 +58,6 @@ APP.UTILS.initView = function() {
 		table.removeChild(tableBody);
 	}
 	tableBody = table.appendChild(document.createElement("tbody"));
-	//var tableBody = table.children[1];
 	APP.DATA.usersArray.forEach(function(user) {
 		if(user.state === "visible") {
 			tableBody.appendChild(user.row);
@@ -108,15 +107,14 @@ APP.UTILS.SearchTimeout = function(interval) {
 		var searchString = APP.UTILS.getSearchString();
 		console.log("searchString " + searchString);
 		APP.DATA.usersArray.forEach(function(user) {
-			if(user.user.firstName.indexOf(searchString) >= 0 || 
-			user.user.lastName.indexOf(searchString) >= 0
-			|| user.user.email.indexOf(searchString) >= 0) 
-			{
-				user.state = "visible";
-			}
-			else {
-				user.state = "invisible";
-			}
+			if(user.user.firstName.indexOf(searchString) >= 0 
+				|| user.user.lastName.indexOf(searchString) >= 0
+				|| user.user.email.indexOf(searchString) >= 0) {
+					user.state = "visible";
+				}
+				else {
+					user.state = "invisible";
+				}
 		})
 		APP.UTILS.initView();
 		APP.UTILS.currentSearchTimeout.finished = true;
