@@ -22,6 +22,7 @@ APP.DATA.User = function(firstName, lastName, email) {
 }
 
 APP.DATA.usersArray = [];
+APP.DATA.filteredUsersArray = [];
 
 APP.DATA.addUserToArray = function(user, row, state) {
 	APP.DATA.usersArray.push({
@@ -52,10 +53,17 @@ APP.UTILS.generateUsersArray = function(result) {
 
 APP.UTILS.initView = function() {
 	var table = document.getElementById("usersTable");
-	table.appendChild(document.createElement("tbody"));
 	var tableBody = table.children[1];
+	if(tableBody && tableBody.tagName == "TBODY") {
+		table.removeChild(tableBody);
+	}
+	tableBody = table.appendChild(document.createElement("tbody"));
+	//var tableBody = table.children[1];
 	APP.DATA.usersArray.forEach(function(user) {
-		tableBody.appendChild(user.row);
+		if(user.state === "visible") {
+			tableBody.appendChild(user.row);
+		}
+		
 	});
 }
 
@@ -78,33 +86,49 @@ APP.UTILS.generateUserRow = function(firstName, lastName, email) {
 
 APP.UTILS.filterBoxListener = function() {
 	console.log("keyupp");
-	if(APP.UTILS.currentSearchTimeout.finished || APP.UTILS.currentSearchTimeout.cleared){
-		/*APP.UTILS.currentSearchTimeout = new APP.UTILS.SearchTimeout(function() {
-			console.log("searching");
-			APP.UTILS.currentSearchTimeout.finished = true;
-		}, 2000);*/
+	if(APP.UTILS.currentSearchTimeout.finished 
+	|| APP.UTILS.currentSearchTimeout.cleared){
 		APP.UTILS.currentSearchTimeout.resetTimer();
 	}
 	else {
 		APP.UTILS.currentSearchTimeout.clear();
+		APP.UTILS.currentSearchTimeout.resetTimer();
 	}
 		
 	}
 	
+APP.UTILS.getSearchString = function() {
+	return document.getElementById("userFilter").value;
+}
+	
 APP.UTILS.SearchTimeout = function(interval) {
-	var id;
+	var timer;
+	
 	var fn = function() {
-		console.log("search");
+		var searchString = APP.UTILS.getSearchString();
+		console.log("searchString " + searchString);
+		APP.DATA.usersArray.forEach(function(user) {
+			if(user.user.firstName.indexOf(searchString) >= 0 || 
+			user.user.lastName.indexOf(searchString) >= 0
+			|| user.user.email.indexOf(searchString) >= 0) 
+			{
+				user.state = "visible";
+			}
+			else {
+				user.state = "invisible";
+			}
+		})
+		APP.UTILS.initView();
 		APP.UTILS.currentSearchTimeout.finished = true;
 	}
 	this.cleared = true;
 	this.finished = true;
 	this.clear = function () {
 		this.cleared = true;
-		clearTimeout(this.id);
+		clearTimeout(this.timer);
 	};
 	this.resetTimer = function() {
-		this.id = setTimeout(fn, interval);
+		this.timer = setTimeout(fn, interval);
 		this.cleared = false;
 		this.finished = false;
 	}
