@@ -78,13 +78,12 @@ APP.UTILS.generateUserRow = function(firstName, lastName, email) {
 
 APP.UTILS.filterBoxListener = function() {
 	console.log("keyupp");
-	if((!APP.UTILS.currentSearchTimeout) 
-		|| APP.UTILS.currentSearchTimeout.finished
-		|| APP.UTILS.currentSearchTimeout.cleared){
-		APP.UTILS.currentSearchTimeout = new APP.UTILS.SearchTimeout(function() {
+	if(APP.UTILS.currentSearchTimeout.finished || APP.UTILS.currentSearchTimeout.cleared){
+		/*APP.UTILS.currentSearchTimeout = new APP.UTILS.SearchTimeout(function() {
 			console.log("searching");
 			APP.UTILS.currentSearchTimeout.finished = true;
-		}, 2000);
+		}, 2000);*/
+		APP.UTILS.currentSearchTimeout.resetTimer();
 	}
 	else {
 		APP.UTILS.currentSearchTimeout.clear();
@@ -92,17 +91,26 @@ APP.UTILS.filterBoxListener = function() {
 		
 	}
 	
-APP.UTILS.SearchTimeout = function(fn, interval) {
-	var id = setTimeout(fn, interval);
-	this.cleared = false;
-	this.finished = false;
+APP.UTILS.SearchTimeout = function(interval) {
+	var id;
+	var fn = function() {
+		console.log("search");
+		APP.UTILS.currentSearchTimeout.finished = true;
+	}
+	this.cleared = true;
+	this.finished = true;
 	this.clear = function () {
 		this.cleared = true;
-		clearTimeout(id);
+		clearTimeout(this.id);
 	};
+	this.resetTimer = function() {
+		this.id = setTimeout(fn, interval);
+		this.cleared = false;
+		this.finished = false;
+	}
+	
 }
 
-APP.UTILS.currentSearchTimeout;
 	
 
 String.prototype.capitalizeFirstLetter = function() {
@@ -111,5 +119,6 @@ String.prototype.capitalizeFirstLetter = function() {
 
 window.onload = function() {
 	APP.NETWORKUTILS.loadUsers(APP.UTILS.initView);
+	APP.UTILS.currentSearchTimeout = new APP.UTILS.SearchTimeout(2000);
 	document.getElementById("userFilter").addEventListener("keyup", APP.UTILS.filterBoxListener);
 	};
