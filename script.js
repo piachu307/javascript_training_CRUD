@@ -76,10 +76,40 @@ APP.UTILS.generateUserRow = function(firstName, lastName, email) {
 	return userRow;
 }
 
+APP.UTILS.filterBoxListener = function() {
+	console.log("keyupp");
+	if((!APP.UTILS.currentSearchTimeout) 
+		|| APP.UTILS.currentSearchTimeout.finished
+		|| APP.UTILS.currentSearchTimeout.cleared){
+		APP.UTILS.currentSearchTimeout = new APP.UTILS.SearchTimeout(function() {
+			console.log("searching");
+			APP.UTILS.currentSearchTimeout.finished = true;
+		}, 2000);
+	}
+	else {
+		APP.UTILS.currentSearchTimeout.clear();
+	}
+		
+	}
+	
+APP.UTILS.SearchTimeout = function(fn, interval) {
+	var id = setTimeout(fn, interval);
+	this.cleared = false;
+	this.finished = false;
+	this.clear = function () {
+		this.cleared = true;
+		clearTimeout(id);
+	};
+}
+
+APP.UTILS.currentSearchTimeout;
+	
+
 String.prototype.capitalizeFirstLetter = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 }
 
 window.onload = function() {
 	APP.NETWORKUTILS.loadUsers(APP.UTILS.initView);
+	document.getElementById("userFilter").addEventListener("keyup", APP.UTILS.filterBoxListener);
 	};
