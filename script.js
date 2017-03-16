@@ -22,7 +22,6 @@ APP.DATA.User = function(firstName, lastName, email) {
 }
 
 APP.DATA.usersArray = [];
-APP.DATA.filteredUsersArray = [];
 
 APP.DATA.addUserToArray = function(user, row, state) {
 	APP.DATA.usersArray.push({
@@ -37,8 +36,8 @@ APP.UTILS.generateUsersArray = function(result) {
 	var tempLastName = "";
 	var tempEmail = "";
 	result.forEach(function(user) {
-		tempFirstName = user.name.first.capitalizeFirstLetter();
-		tempLastName = user.name.last.capitalizeFirstLetter();
+		tempFirstName = user.name.first;
+		tempLastName = user.name.last;
 		tempEmail = user.email;
 		APP.DATA.addUserToArray(
 		new APP.DATA.User(
@@ -52,12 +51,9 @@ APP.UTILS.generateUsersArray = function(result) {
 }
 
 APP.UTILS.initView = function() {
-	var table = document.getElementById("usersTable");
-	var tableBody = table.children[1];
-	if(tableBody && tableBody.tagName == "TBODY") {
-		table.removeChild(tableBody);
-	}
-	tableBody = table.appendChild(document.createElement("tbody"));
+	APP.UTILS.usersTable = document.getElementById("usersTable");
+	var tableBody = APP.UTILS.usersTable.children[1];
+	tableBody = APP.UTILS.usersTable.appendChild(document.createElement("tbody"));
 	APP.DATA.usersArray.forEach(function(user) {
 		if(user.state === "visible") {
 			tableBody.appendChild(user.row);
@@ -79,6 +75,7 @@ APP.UTILS.generateUserRow = function(firstName, lastName, email) {
 	userRow.appendChild(firstNameCell);
 	userRow.appendChild(lastNameCell);
 	userRow.appendChild(emailCell);
+	userRow.style.display = "table-row";
 	
 	return userRow;
 }
@@ -96,6 +93,7 @@ APP.UTILS.filterBoxListener = function() {
 		
 	}
 	
+	
 APP.UTILS.getSearchString = function() {
 	return document.getElementById("userFilter").value;
 }
@@ -111,12 +109,17 @@ APP.UTILS.SearchTimeout = function(interval) {
 				|| user.user.lastName.indexOf(searchString) >= 0
 				|| user.user.email.indexOf(searchString) >= 0) {
 					user.state = "visible";
+					if(user.row.style.display !== "table-row") {
+						user.row.style.display = "table-row"
+					}
 				}
 				else {
 					user.state = "invisible";
+					if(user.row.style.display !== "none") {
+						user.row.style.display = "none"
+					}
 				}
 		})
-		APP.UTILS.initView();
 		APP.UTILS.currentSearchTimeout.finished = true;
 	}
 	this.cleared = true;
@@ -131,12 +134,6 @@ APP.UTILS.SearchTimeout = function(interval) {
 		this.finished = false;
 	}
 	
-}
-
-	
-
-String.prototype.capitalizeFirstLetter = function() {
-	return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 }
 
 window.onload = function() {

@@ -20,6 +20,10 @@
 	font-size: 12px;
 }
 
+#usersTable tbody td:nth-child(-n+2):first-letter {
+	text-transform: uppercase;
+}
+
 #usersTable tr:nth-child(even){
 	background-color: #f2f2f2;
 }
