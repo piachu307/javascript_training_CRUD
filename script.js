@@ -82,14 +82,14 @@ APP.UTILS.generateUserRow = function(firstName, lastName, email) {
 
 APP.UTILS.filterBoxListener = function() {
 	console.log("keyupp");
-	if(APP.UTILS.currentSearchTimeout.finished 
-	|| APP.UTILS.currentSearchTimeout.cleared){
-		APP.UTILS.currentSearchTimeout.resetTimer();
-	}
-	else {
+	if(!APP.UTILS.currentSearchTimeout.finished 
+	|| !APP.UTILS.currentSearchTimeout.cleared){
 		APP.UTILS.currentSearchTimeout.clear();
-		APP.UTILS.currentSearchTimeout.resetTimer();
 	}
+	
+		
+	APP.UTILS.currentSearchTimeout.resetTimer();
+	
 		
 	}
 	
