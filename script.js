@@ -16,8 +16,8 @@ APP.NETWORKUTILS.loadUsers = function(initializeViewCallback) {
 }
 
 APP.DATA.User = function(firstName, lastName, email) {
-	this.firstName = firstName;
-	this.lastName = lastName;
+	this.firstName = firstName[0].toUpperCase() + firstName.slice(1, firstName.length);
+	this.lastName = lastName[0].toUpperCase() + lastName.slice(1, lastName.length);;
 	this.email = email;
 }
 
@@ -32,21 +32,17 @@ APP.DATA.addUserToArray = function(user, row, state) {
 }
 
 APP.UTILS.generateUsersArray = function(result) {
-	var tempFirstName = "";
-	var tempLastName = "";
-	var tempEmail = "";
-	result.forEach(function(user) {
-		tempFirstName = user.name.first;
-		tempLastName = user.name.last;
-		tempEmail = user.email;
+	var tempUser;
+	result.forEach(function(user, i) {
+		tempUser = new APP.DATA.User(user.name.first, user.name.last, user.email)
+		function onClick(firstName, lastName, email) {
+			APP.DATA.usersArray[i].user.firstName = firstName;
+			}
 		APP.DATA.addUserToArray(
-		new APP.DATA.User(
-			tempFirstName, 
-			tempLastName, 
-			tempEmail
-			),
-		APP.UTILS.generateUserRow(tempFirstName, tempLastName, tempEmail),
-		"visible");	
+		tempUser,
+		APP.UTILS.generateUserRow(tempUser, onClick),
+		"visible");
+		
 	});
 }
 
@@ -62,19 +58,53 @@ APP.UTILS.initView = function() {
 	});
 }
 
-APP.UTILS.generateUserRow = function(firstName, lastName, email) {
+APP.UTILS.generateUserRow = function(user, editButtonOnClickHandler) {
 	var firstNameCell = document.createElement("td");
+	var firstNameInput = document.createElement("input");
+	firstNameInput.setAttribute("type", "text");
+	firstNameInput.disabled = true;
 	var lastNameCell = document.createElement("td");
+	var lastNameInput = document.createElement("input");
+	lastNameInput.setAttribute("type", "text");
+	lastNameInput.disabled = true;
 	var emailCell = document.createElement("td");
+	var emailInput = document.createElement("input");
+	emailInput.setAttribute("type", "text");
+	emailInput.disabled = true;
+	var editButtonCell = document.createElement("td");
+	var editButton = document.createElement("button");
 	
-	firstNameCell.textContent = firstName;
-	lastNameCell.textContent = lastName;
-	emailCell.textContent = email;
+	editButton.innerHTML = "Edit";
+	editButtonCell.appendChild(editButton);
+	editButton.addEventListener("click", function() {
+		if(this.innerHTML === "Edit") {
+			this.innerHTML = "Save";
+			firstNameInput.disabled = false;
+			lastNameInput.disabled = false;
+			emailInput.disabled = false;
+			
+		} else {
+			this.innerHTML = "Edit";
+			firstNameInput.disabled = true;
+			lastNameInput.disabled = true;
+			emailInput.disabled = true;
+			editButtonOnClickHandler(firstNameInput.value, lastNameInput.value, emailInput.value);
+		}
+		
+	}
+	);
+	firstNameCell.appendChild(firstNameInput);
+	firstNameInput.value = user.firstName;
+	lastNameCell.appendChild(lastNameInput);
+	lastNameInput.value = user.lastName;
+	emailCell.appendChild(emailInput);
+	emailInput.value = user.email;
 	
 	var userRow = document.createElement("tr");
 	userRow.appendChild(firstNameCell);
 	userRow.appendChild(lastNameCell);
 	userRow.appendChild(emailCell);
+	userRow.appendChild(editButtonCell);
 	userRow.style.display = "table-row";
 	
 	return userRow;
@@ -86,11 +116,7 @@ APP.UTILS.filterBoxListener = function() {
 	|| !APP.UTILS.currentSearchTimeout.cleared){
 		APP.UTILS.currentSearchTimeout.clear();
 	}
-	
-		
 	APP.UTILS.currentSearchTimeout.resetTimer();
-	
-		
 	}
 	
 	

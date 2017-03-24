@@ -14,14 +14,21 @@
 	font-weight: bold;
 }
 
-#usersTable td {
+#usersTable td input {
 	padding: 5px;
 	font-family: Verdana, Geneva, sans-serif;
-	font-size: 12px;
+	font-size: 15px;
 }
 
-#usersTable tbody td:nth-child(-n+2):first-letter {
-	text-transform: uppercase;
+#usersTable tbody td input {
+	border: none;
+	background: transparent;
+	width: 80%;
+}
+
+#usersTable tbody td input:enabled {
+	border: solid;
+
 }
 
 #usersTable tr:nth-child(even){
